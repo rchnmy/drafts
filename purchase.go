@@ -18,17 +18,16 @@ func ChooseVehicle(option1, option2 string) string {
         return fmt.Sprintf("%s is clearly the better choice.", choice)
 }
 
-// CalculateResellPrice calculates how much a vehicle can resell for at a certain age.
 func CalculateResellPrice(originalPrice, age float64) float64 {
     // Overengeenering for practice sake
     var discount, actualPrice float64
     switch {
         case 3 > age:
-	    discount += 20
-	case (3 <= age) && (age < 10):
-	    discount += 30
-	case 10 <= age:
-	    discount += 50
+            discount += 20
+        case (3 <= age) && (age < 10):
+            discount += 30
+        case 10 <= age:
+            discount += 50
     }
     actualPrice = originalPrice - originalPrice / (100 / discount)
     return actualPrice
