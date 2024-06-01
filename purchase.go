@@ -2,6 +2,25 @@ package purchase // https://exercism.org/tracks/go/exercises/vehicle-purchase/so
 
 import "fmt"
 
+type carPrice struct {
+    age, originalPrice, discount float64
+}
+
+func(c *carPrice) Discount() {
+    switch {
+        case c.age < 3:
+            c.discount = 20
+        case (3 <= c.age) && (c.age < 10):
+            c.discount = 30
+        case 10 <= c.age:
+            c.discount = 50
+    }
+}
+
+func(c carPrice) Estimate() float64 {
+    return c.originalPrice - c.originalPrice / (100 / c.discount)
+}
+
 // NeedsLicense determines whether a license is needed to drive a type of vehicle. Only "car" and "truck" require a license.
 func NeedsLicense(kind string) bool {
     switch kind {
@@ -15,20 +34,15 @@ func NeedsLicense(kind string) bool {
 func ChooseVehicle(option1, option2 string) string {
     var choice string
     if option1 < option2 { choice = option1 } else { choice = option2 }
-        return fmt.Sprintf("%s is clearly the better choice.", choice)
+    return fmt.Sprintf("%s is clearly the better choice.", choice)
 }
 
+// CalculateResellPrice calculates how much a vehicle can resell for at a certain age.
 func CalculateResellPrice(originalPrice, age float64) float64 {
-    // Overengeenering for practice sake
-    var discount, actualPrice float64
-    switch {
-        case 3 > age:
-            discount += 20
-        case (3 <= age) && (age < 10):
-            discount += 30
-        case 10 <= age:
-            discount += 50
+    c := &carPrice{
+        age:           age,
+        originalPrice: originalPrice,
     }
-    actualPrice = originalPrice - originalPrice / (100 / discount)
-    return actualPrice
+    c.Discount()
+    return c.Estimate()
 }
