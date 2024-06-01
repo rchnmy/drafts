@@ -34,10 +34,9 @@ func HappyBirthday(name string, age int) string {
 func AssignTable(name string, table int, neighbor, direction string, distance float64) string {
     defer str.Reset()
     
-    null := "0"
     stable := strconv.FormatInt(int64(table), 10)
     for len(stable) < 3 {
-          stable = null + stable
+          stable = "0" + stable
       }
 
     rdist := strconv.FormatFloat(distance, 'f', 1, 64)
