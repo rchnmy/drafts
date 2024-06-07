@@ -1,54 +1,130 @@
 package blackjack // https://exercism.org/tracks/go/exercises/blackjack/solutions/rchnmy
 
+var cardValue = map[string]int {
+    "ace":   11,
+    "king":  10,
+    "queen": 10,
+    "jack":  10,
+    "ten":   10,
+    "nine":  9,
+    "eight": 8,
+    "seven": 7,
+    "six":   6,
+    "five":  5,
+    "four":  4,
+    "three": 3,
+    "two":   2,
+}
+
+var result = map[string]string {
+    "Tie":   "T",
+    "Split": "P",
+    "Win":   "W",
+    "Stand": "S",
+    "Hit":   "H",
+}
+
+type player struct {
+    Dealer   int
+    Self     int
+    Hand     string
+    Decision string
+}
+
 // ParseCard returns the integer value of a card following blackjack ruleset.
 func ParseCard(card string) int {
-    var value int
-    lowest := []string{"two", "three", "four", "five", "six", "seven", "eight", "nine"}
-
-    switch card {
-        case "ace":
-            value = 11
-        case "king", "queen", "jack", "ten":
-            value = 10
-        case "nine", "eight", "seven", "six", "five", "four", "three", "two":
-            for i, _ := range lowest {
-                switch lowest[i] {
-                    case card:
-                        value = i + 2
-                }
-            }
+    if _, ok := cardValue[card]; !ok {
+        return 0
     }
-    return value
+    return cardValue[card]
+}
+
+// evalDealer calculates the dealer's cards value.
+func(p *player) evalDealer(cards ...string) {
+    for _, c := range cards {
+        p.Dealer += ParseCard(c)
+    }
+}
+
+// evalSelf calculates the player's cards value.
+func(p *player) evalSelf(cards ...string) {
+    for _, c := range cards {
+        p.Self += ParseCard(c)
+    }
+}
+
+// isStandoff checks if there is a tie.
+func(p *player) isStandoff() bool {
+    switch p.Self {
+    case p.Dealer:
+        return true
+    default:
+        p.isNatural()
+    }
+    return false
+}
+
+// isNatural checks if the player has blackjack
+// and sets the corresponding hand type.
+func(p *player) isNatural() {
+    switch p.Self {
+    case 22:
+        p.Hand = "Unnatural"
+    case 21:
+        p.Hand = "Natural"
+    default:
+        p.isSoft()
+    }
+}
+
+// isSoft is supposed to check if the player has an ace
+// and set the corresponding hand type. But Alex's strategy
+// is a bit different.
+func(p *player) isSoft() {
+    switch {
+    case 12 <= p.Self:
+        p.Hand = "Soft"
+    default:
+        p.Hand = "Hard"
+    }
 }
 
 // FirstTurn returns the decision for the first turn, given two cards of the
 // player and one card of the dealer.
 func FirstTurn(card1, card2, dealerCard string) string {
-    playerHand := ParseCard(card1) + ParseCard(card2)
-    dealerHand := ParseCard(dealerCard)
-    var decision string
+    p := &player{}
+    p.evalDealer(dealerCard)
+    p.evalSelf(card1, card2)
 
     switch {
-        case playerHand == 22:
-            decision = "P"
-        case playerHand == 21:
+    case p.isStandoff():
+        p.Decision = result["Tie"]
+    default:
+        switch p.Hand {
+        case "Unnatural":
+            p.Decision = result["Split"]
+        case "Natural":
             switch {
-                case dealerHand < 10:
-                    decision = "W"
-                default:
-                    decision = "S"
+            case 10 <= p.Dealer:
+                p.Decision = result["Stand"]
+            default:
+                p.Decision = result["Win"]
             }
-        case 17 <= playerHand && playerHand <= 20:
-            decision = "S"
-        case 12 <= playerHand && playerHand <= 16:
+        case "Soft":
             switch {
-                case 7 <= dealerHand:
-                    decision = "H"
+            case 16 < p.Self:
+                p.Decision = result["Stand"]
+            default:
+                switch {
+                case 7 <= p.Dealer:
+                    p.Decision = result["Hit"]
                 default:
-                    decision = "S"
+                    p.Decision = result["Stand"]
+                }
             }
-        case playerHand <= 11:
-            decision = "H"
+        default:
+            p.Decision = result["Hit"]
+        }
     }
-    return decision
+    return p.Decision
 }
