@@ -35,7 +35,7 @@ func Quantities(layers []string) (int, float64) {
             }
         }
        noodles *= 50
-   }()
+    }()
 
     go func() {
         defer wg.Done()
@@ -46,8 +46,8 @@ func Quantities(layers []string) (int, float64) {
             }
         }
        sauce *= 0.2
-   }()
-   wg.Wait()
+    }()
+    wg.Wait()
 
     return noodles, sauce
     }
