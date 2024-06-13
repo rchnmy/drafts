@@ -21,11 +21,11 @@ func SplitAfterFieldsFunc(s string, seps ...string) []string {
     str := strings.Builder{}
     i := 0
     for i < se {
-        defer str.Reset()
         for _, sep := range seps {
             str.WriteString(sep)
         }
         is := strings.IndexAny(s, str.String())
+        str.Reset()
         switch {
             case is < 0:
                 break
