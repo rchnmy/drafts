@@ -12,12 +12,12 @@ func splitAfterFieldsFunc(s string, seps ...string) []string {
         return nil    
     }
     
-    var se int
+    se := 0
     for _, sep := range seps {
         for _, r := range s {
             switch sep {
-                case string(r):
-                    se++
+            case string(r):
+                se++
             }
         }
     }
