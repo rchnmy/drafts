@@ -4,9 +4,14 @@ import (
     "strings"
 )
 
-// SplitAfterFieldsFunc is equivalent to `strings.SplitAfter` for multiple separators.
-// If `seps` is empty, SplitAfterFieldsFunc returns an empty slice.
-func SplitAfterFieldsFunc(s string, seps ...string) []string {
+// splitAfterFieldsFunc is equivalent to `strings.SplitAfter` for multiple separators.
+// If `seps` is empty, splitAfterFieldsFunc returns an empty slice.
+func splitAfterFieldsFunc(s string, seps ...string) []string {
+    switch s {
+    case "":
+        return nil    
+    }
+    
     var se int
     for _, sep := range seps {
         for _, r := range s {
@@ -17,7 +22,7 @@ func SplitAfterFieldsFunc(s string, seps ...string) []string {
         }
     }
 
-    spl := make([]string, se+1, len(s))
+    spl := make([]string, se + 1, len(s))
     str := strings.Builder{}
     i := 0
     for i < se {
@@ -26,12 +31,11 @@ func SplitAfterFieldsFunc(s string, seps ...string) []string {
         }
         is := strings.IndexAny(s, str.String())
         str.Reset()
-        switch {
-            case is < 0:
-                break
+        if is < 0 {
+            break
         }
-        spl[i] = s[:is+1]
-        s = s[is+1:]
+        spl[i] = s[:is + 1]
+        s = s[is + 1:]
         i++
     }
     spl[i] = s
