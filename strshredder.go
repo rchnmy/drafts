@@ -26,17 +26,23 @@ func strShredder(s []string) []string {
 
     i, c := 0, 0
 loop:
-    for i < len(s) {
-        for n, x := <-nx; i < len(s) && str.Len() + n < 35; i++ {
-            str.WriteString(s[i])
-            n, x = <-nx
+    for i < len(spl) {
+        if 45 < len(spl[i]) {
+            break
+        }
+        for n, x := <- nx; i < len(spl) && str.Len() + n < 45; i++ {
+            str.WriteString(spl[i])
+            n, x = <- nx
             if !x {
-                for i += 1; i < len(s); {
-                    for i < len(s) && str.Len() + len(s[i]) < 35 {
-                        str.WriteString(s[i])
+                for i += 1; i < len(spl); {
+                    if 45 < len(spl[i]) {
+                        break
+                    }
+                    for i < len(spl) && str.Len() + len(spl[i]) < 45 {
+                        str.WriteString(spl[i])
                         i++
                     }
-                    s[c] = str.String()
+                    spl[c] = str.String()
                     str.Reset()
                     c++
                 }
@@ -47,8 +53,7 @@ loop:
         str.Reset()
         c++
     }
-
-    // Manual garbage collection is unnecessary in this case, but I like it. 
+    
     for g := c; g < len(s); g++ {
         s[g] = ""
     }
