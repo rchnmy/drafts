@@ -20,7 +20,7 @@ func strShredder(s []string) []string {
     go func(nx chan<- int, s []string) {
        for i := 1; i < len(s); i++ {
            nx <- len(s[i])
-    }
+        }
         close(nx)
     }(nx, s)
 
