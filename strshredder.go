@@ -5,7 +5,7 @@ import (
 )
 
 // strShredder rebuilds strings in a slice into strings with a specific length
-// (up to 35 bytes in the code below) and puts them back in the original slice.
+// (up to 45 bytes in the code below) and puts them back in the original slice.
 func strShredder(s []string) []string {
     switch {
     case s == nil:
@@ -26,23 +26,23 @@ func strShredder(s []string) []string {
 
     i, c := 0, 0
 loop:
-    for i < len(spl) {
-        if 45 < len(spl[i]) {
+    for i < len(s) {
+        if 45 < len(s[i]) {
             break
         }
-        for n, x := <- nx; i < len(spl) && str.Len() + n < 45; i++ {
-            str.WriteString(spl[i])
+        for n, x := <- nx; i < len(s) && str.Len() + n < 45; i++ {
+            str.WriteString(s[i])
             n, x = <- nx
             if !x {
-                for i += 1; i < len(spl); {
-                    if 45 < len(spl[i]) {
+                for i += 1; i < len(s); {
+                    if 45 < len(s[i]) {
                         break
                     }
-                    for i < len(spl) && str.Len() + len(spl[i]) < 45 {
-                        str.WriteString(spl[i])
+                    for i < len(s) && str.Len() + len(s[i]) < 45 {
+                        str.WriteString(s[i])
                         i++
                     }
-                    spl[c] = str.String()
+                    s[c] = str.String()
                     str.Reset()
                     c++
                 }
